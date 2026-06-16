@@ -1,0 +1,159 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  --font-primary: 'Plus Jakarta Sans', sans-serif;
+  --font-display: 'Outfit', sans-serif;
+}
+
+body {
+  font-family: var(--font-primary);
+  background-color: #0b0f19;
+  color: #f3f4f6;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Glassmorphism Styles */
+.glass-panel {
+  background: rgba(17, 24, 39, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-card {
+  background: rgba(30, 41, 59, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  transform: translateY(-6px);
+  background: rgba(30, 41, 59, 0.65);
+  border-color: rgba(99, 102, 241, 0.3);
+  box-shadow: 0 12px 25px -5px rgba(0, 0, 0, 0.3), 0 0 20px 0 rgba(99, 102, 241, 0.15);
+}
+
+/* Glowing Border Buttons & Cards */
+.glow-primary:hover {
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.5);
+}
+
+.glow-emerald:hover {
+  box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+}
+
+/* Gradients */
+.text-gradient {
+  background: linear-gradient(135deg, #a5b4fc 0%, #6366f1 50%, #4f46e5 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-emerald {
+  background: linear-gradient(135deg, #a7f3d0 0%, #10b981 50%, #059669 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Animations */
+@keyframes pulse-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #1e293b 25%, #334155 50%, #1e293b 75%);
+  background-size: 200% 100%;
+  animation: pulse-shimmer 1.5s infinite;
+}
+
+@keyframes spin-custom {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinner {
+  animation: spin-custom 1s linear infinite;
+}
+
+/* Animations */
+.fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom Card Aspect Ratio & Image Hover */
+.card-img-container {
+  position: relative;
+  overflow: hidden;
+  border-radius: 0.75rem;
+}
+
+.card-img-container img {
+  transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover .card-img-container img {
+  transform: scale(1.08);
+}
+
+/* Floating Elements */
+.float-element {
+  animation: floating 4s ease-in-out infinite;
+}
+
+@keyframes floating {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+/* Navigation Blur Active state */
+.nav-scrolled {
+  background: rgba(11, 15, 25, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Modal Transition */
+.modal-backdrop {
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease-out;
+}

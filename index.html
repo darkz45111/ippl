@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AutoRent - Sistem Informasi Rental Mobil</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            darkbg: '#0b0f19',
+            cardbg: 'rgba(30, 41, 59, 0.45)',
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- FontAwesome Icons & Google Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-darkbg text-gray-100 min-h-screen flex flex-col justify-between selection:bg-indigo-500 selection:text-white">
+
+  <!-- ==================== VIEW 1: PUBLIC VIEW ==================== -->
+  <main id="public-view" class="fade-in flex-grow flex flex-col">
+    <!-- Navbar -->
+    <nav id="navbar" class="fixed top-0 left-0 w-full z-40 transition-all duration-300 py-4 px-6 md:px-12 flex justify-between items-center bg-transparent">
+      <div class="flex items-center space-x-2">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/30">
+          <i class="fa-solid fa-car-side text-white text-lg"></i>
+        </div>
+        <span class="text-2xl font-bold tracking-tight text-white font-display">Auto<span class="text-indigo-400">Rent</span></span>
+      </div>
+      
+      <div class="flex items-center space-x-4">
+        <a href="#katalog" class="text-gray-300 hover:text-white text-sm font-medium transition hidden md:block">Katalog Mobil</a>
+        <button id="btn-login-trigger" class="px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 transition duration-300 shadow-md shadow-indigo-600/20 hover:shadow-indigo-500/30 border border-indigo-500/30 flex items-center space-x-2 glow-primary">
+          <i class="fa-solid fa-right-to-bracket text-xs"></i>
+          <span>Login Admin</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="relative pt-32 pb-20 px-6 md:px-12 flex flex-col items-center text-center overflow-hidden">
+      <!-- Ambient light effect -->
+      <div class="absolute -top-40 left-1/2 -translate-x-1/2 w-[600px] h-[350px] bg-indigo-500/10 rounded-full blur-[120px] pointer-events-none"></div>
+      <div class="absolute top-40 right-10 w-[250px] h-[250px] bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none"></div>
+
+      <div class="max-w-4xl mx-auto float-element">
+        <span class="px-3 py-1.5 rounded-full text-xs font-semibold tracking-wider text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 uppercase mb-4 inline-block">
+          Sewa Mobil Premium & Cepat
+        </span>
+        <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight text-white mb-6 leading-tight">
+          Temukan Kendaraan Terbaik Untuk <span class="text-gradient">Perjalanan Anda</span>
+        </h1>
+        <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
+          AutoRent menyediakan armada mobil terlengkap, terawat, dan siap pakai. Proses sewa praktis langsung terhubung ke WhatsApp.
+        </p>
+      </div>
+
+      <!-- Quick stats -->
+      <div class="grid grid-cols-3 gap-4 md:gap-12 max-w-3xl w-full mt-4 p-6 glass-panel rounded-2xl border border-white/5">
+        <div class="text-center">
+          <div class="text-2xl md:text-3xl font-extrabold text-indigo-400" id="stat-total-armada-pub">...</div>
+          <div class="text-xs md:text-sm text-gray-400 mt-1">Total Armada</div>
+        </div>
+        <div class="text-center border-x border-white/10">
+          <div class="text-2xl md:text-3xl font-extrabold text-emerald-400" id="stat-tersedia-pub">...</div>
+          <div class="text-xs md:text-sm text-gray-400 mt-1">Tersedia</div>
+        </div>
+        <div class="text-center">
+          <div class="text-2xl md:text-3xl font-extrabold text-rose-400" id="stat-disewa-pub">...</div>
+          <div class="text-xs md:text-sm text-gray-400 mt-1">Sedang Disewa</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Catalog Section -->
+    <section id="katalog" class="py-16 px-6 md:px-12 max-w-7xl mx-auto w-full flex-grow">
+      <!-- Search & Filter Controls -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10 p-6 glass-panel rounded-2xl border border-white/5">
+        <div>
+          <h2 class="text-2xl font-bold text-white mb-1">Pilih Armada Kami</h2>
+          <p class="text-xs text-gray-400">Gunakan filter untuk menemukan kategori mobil yang sesuai kebutuhan.</p>
+        </div>
+        
+        <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full md:w-auto">
+          <!-- Custom Search Bar -->
+          <div class="relative flex-grow sm:w-64">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+            <input type="text" id="search-input" placeholder="Cari merk atau nama mobil..." class="w-full pl-10 pr-4 py-2.5 bg-slate-900/50 border border-white/10 focus:border-indigo-500 rounded-xl text-sm focus:outline-none transition duration-300 text-white placeholder-gray-500">
+          </div>
+
+          <!-- Dropdown Filter -->
+          <div class="relative">
+            <i class="fa-solid fa-filter absolute left-3.5 top-1/2 -translate-y-1/2 text-indigo-400 text-sm"></i>
+            <select id="category-filter" class="appearance-none w-full sm:w-48 pl-10 pr-10 py-2.5 bg-slate-900/50 border border-white/10 focus:border-indigo-500 rounded-xl text-sm focus:outline-none transition duration-300 text-white cursor-pointer">
+              <option value="Semua">Semua Kategori</option>
+            </select>
+            <i class="fa-solid fa-chevron-down absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none text-xs"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Skeleton Loading Grid -->
+      <div id="cars-skeleton" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Card Skeleton 1 -->
+        <div class="glass-card rounded-2xl p-4 flex flex-col justify-between h-[450px]">
+          <div>
+            <div class="skeleton w-full h-48 rounded-xl mb-4"></div>
+            <div class="flex justify-between items-center mb-2">
+              <div class="skeleton w-1/4 h-5 rounded"></div>
+              <div class="skeleton w-1/3 h-6 rounded-full"></div>
+            </div>
+            <div class="skeleton w-3/4 h-8 rounded mb-2"></div>
+            <div class="skeleton w-1/2 h-5 rounded mb-4"></div>
+            <div class="grid grid-cols-3 gap-2 py-3 border-y border-white/5 mb-4">
+              <div class="skeleton h-10 rounded"></div>
+              <div class="skeleton h-10 rounded"></div>
+              <div class="skeleton h-10 rounded"></div>
+            </div>
+          </div>
+          <div class="flex justify-between items-center mt-2">
+            <div class="skeleton w-1/3 h-7 rounded"></div>
+            <div class="skeleton w-1/3 h-10 rounded-xl"></div>
+          </div>
+        </div>
+        <!-- Card Skeleton 2 -->
+        <div class="glass-card rounded-2xl p-4 flex flex-col justify-between h-[450px]">
+          <div>
+            <div class="skeleton w-full h-48 rounded-xl mb-4"></div>
+            <div class="flex justify-between items-center mb-2">
+              <div class="skeleton w-1/4 h-5 rounded"></div>
+              <div class="skeleton w-1/3 h-6 rounded-full"></div>
+            </div>
+            <div class="skeleton w-3/4 h-8 rounded mb-2"></div>
+            <div class="skeleton w-1/2 h-5 rounded mb-4"></div>
+            <div class="grid grid-cols-3 gap-2 py-3 border-y border-white/5 mb-4">
+              <div class="skeleton h-10 rounded"></div>
+              <div class="skeleton h-10 rounded"></div>
+              <div class="skeleton h-10 rounded"></div>
+            </div>
+          </div>
+          <div class="flex justify-between items-center mt-2">
+            <div class="skeleton w-1/3 h-7 rounded"></div>
+            <div class="skeleton w-1/3 h-10 rounded-xl"></div>
+          </div>
+        </div>
+        <!-- Card Skeleton 3 -->
+        <div class="glass-card rounded-2xl p-4 flex flex-col justify-between h-[450px]">
+          <div>
+            <div class="skeleton w-full h-48 rounded-xl mb-4"></div>
+            <div class="flex justify-between items-center mb-2">
+              <div class="skeleton w-1/4 h-5 rounded"></div>
+              <div class="skeleton w-1/3 h-6 rounded-full"></div>
+            </div>
+            <div class="skeleton w-3/4 h-8 rounded mb-2"></div>
+            <div class="skeleton w-1/2 h-5 rounded mb-4"></div>
+            <div class="grid grid-cols-3 gap-2 py-3 border-y border-white/5 mb-4">
+              <div class="skeleton h-10 rounded"></div>
+              <div class="skeleton h-10 rounded"></div>
+              <div class="skeleton h-10 rounded"></div>
+            </div>
+          </div>
+          <div class="flex justify-between items-center mt-2">
+            <div class="skeleton w-1/3 h-7 rounded"></div>
+            <div class="skeleton w-1/3 h-10 rounded-xl"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Real Cards Grid -->
+      <div id="cars-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 hidden">
+        <!-- Rendered via JS -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="empty-state" class="hidden flex-col items-center justify-center py-12 text-center">
+        <div class="w-16 h-16 rounded-full bg-slate-800 flex items-center justify-center mb-4 text-slate-500">
+          <i class="fa-solid fa-car-rear text-3xl"></i>
+        </div>
+        <h3 class="text-lg font-semibold text-white mb-1">Mobil Tidak Ditemukan</h3>
+        <p class="text-sm text-gray-500 max-w-xs">Tidak ada mobil yang sesuai dengan kata kunci pencarian atau filter kategori Anda.</p>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/5 py-8 mt-12 bg-[#090d16]">
+      <div class="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center">
+            <i class="fa-solid fa-car-side text-white text-sm"></i>
+          </div>
+          <span class="text-lg font-bold text-white font-display">Auto<span class="text-indigo-400">Rent</span></span>
+        </div>
+        <p class="text-xs text-gray-500">&copy; 2026 AutoRent. Semua Hak Dilindungi. Dibuat dengan presisi.</p>
+      </div>
+    </footer>
+  </main>
+
+  <!-- ==================== VIEW 2: ADMIN VIEW ==================== -->
+  <main id="admin-view" class="hidden fade-in min-h-screen flex flex-col md:flex-row bg-[#080b13]">
+    <!-- Admin Sidebar -->
+    <aside class="w-full md:w-64 border-b md:border-b-0 md:border-r border-white/5 bg-[#090d16] flex flex-col shrink-0">
+      <!-- Brand & User Profile Info -->
+      <div class="p-6 border-b border-white/5 flex flex-col space-y-4">
+        <div class="flex items-center space-x-2">
+          <div class="w-9 h-9 rounded-lg bg-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20">
+            <i class="fa-solid fa-car-side text-white text-sm"></i>
+          </div>
+          <span class="text-xl font-bold tracking-tight text-white font-display">Auto<span class="text-indigo-400">Rent</span></span>
+          <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 uppercase">Admin</span>
+        </div>
+        <div class="flex items-center space-x-3 p-2 bg-slate-900/50 rounded-xl border border-white/5">
+          <div class="w-9 h-9 rounded-lg bg-slate-700 flex items-center justify-center text-white">
+            <i class="fa-solid fa-user-gear"></i>
+          </div>
+          <div>
+            <div class="text-xs font-semibold text-white">Administrator</div>
+            <div class="text-[10px] text-green-400 flex items-center gap-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span> Online
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Navigation Menus -->
+      <div class="p-4 flex-grow flex flex-col justify-between">
+        <ul class="space-y-1">
+          <li>
+            <a href="#" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium bg-indigo-600/10 text-indigo-400 border border-indigo-500/20">
+              <i class="fa-solid fa-chart-pie text-base"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <!-- Empty nav list for structure -->
+        </ul>
+
+        <!-- Logout Trigger in Sidebar -->
+        <button id="btn-logout" class="flex items-center space-x-3 px-4 py-3 rounded-xl text-sm font-medium text-rose-400 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 w-full transition duration-300 mt-8">
+          <i class="fa-solid fa-right-from-bracket text-base"></i>
+          <span>Keluar Sesi</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Admin Content Area -->
+    <section class="flex-grow p-6 md:p-10 overflow-y-auto">
+      <!-- Admin Header -->
+      <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+        <div>
+          <h1 class="text-3xl font-extrabold text-white">Dashboard Admin</h1>
+          <p class="text-xs text-gray-400 mt-1">Kelola data kendaraan dan pantau statistik rental secara real-time.</p>
+        </div>
+        
+        <div class="text-xs text-gray-400 bg-slate-900/50 border border-white/5 px-4 py-2.5 rounded-xl flex items-center gap-2">
+          <i class="fa-regular fa-calendar-check text-indigo-400"></i>
+          <span id="admin-current-date">Hari Ini</span>
+        </div>
+      </header>
+
+      <!-- 3 Statistik Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        <!-- Total Armada Card -->
+        <div class="glass-card rounded-2xl p-6 relative overflow-hidden">
+          <div class="absolute -right-4 -bottom-4 opacity-10 text-indigo-400 text-8xl">
+            <i class="fa-solid fa-car"></i>
+          </div>
+          <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+              <i class="fa-solid fa-warehouse text-xl"></i>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Armada</p>
+              <h3 class="text-3xl font-bold text-white mt-1" id="stat-total-armada">...</h3>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tersedia Card -->
+        <div class="glass-card rounded-2xl p-6 relative overflow-hidden">
+          <div class="absolute -right-4 -bottom-4 opacity-10 text-emerald-400 text-8xl">
+            <i class="fa-solid fa-square-check"></i>
+          </div>
+          <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+              <i class="fa-solid fa-circle-check text-xl"></i>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Unit Tersedia</p>
+              <h3 class="text-3xl font-bold text-white mt-1" id="stat-tersedia">...</h3>
+            </div>
+          </div>
+        </div>
+
+        <!-- Disewa Card -->
+        <div class="glass-card rounded-2xl p-6 relative overflow-hidden">
+          <div class="absolute -right-4 -bottom-4 opacity-10 text-amber-400 text-8xl">
+            <i class="fa-solid fa-ban"></i>
+          </div>
+          <div class="flex items-center space-x-4">
+            <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+              <i class="fa-solid fa-key text-xl"></i>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Unit Disewa</p>
+              <h3 class="text-3xl font-bold text-white mt-1" id="stat-disewa">...</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table Container -->
+      <div class="glass-panel rounded-2xl border border-white/5 overflow-hidden">
+        <!-- Table Header Controls -->
+        <div class="p-6 border-b border-white/5 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h3 class="text-lg font-bold text-white">Daftar Data Mobil</h3>
+            <p class="text-xs text-gray-400 mt-0.5">Berikut adalah daftar lengkap kendaraan yang tercatat di database.</p>
+          </div>
+          <!-- Admin Table Search -->
+          <div class="relative w-full sm:w-64">
+            <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
+            <input type="text" id="admin-search" placeholder="Cari mobil..." class="w-full pl-9 pr-4 py-2 bg-slate-900/50 border border-white/10 focus:border-indigo-500 rounded-xl text-xs focus:outline-none transition duration-300 text-white placeholder-gray-500">
+          </div>
+        </div>
+
+        <!-- Responsive Table Wrapper -->
+        <div class="overflow-x-auto w-full">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-slate-900/40 text-gray-400 uppercase text-[10px] tracking-wider border-b border-white/5">
+                <th class="py-4 px-6 font-semibold">ID Mobil</th>
+                <th class="py-4 px-6 font-semibold">Nama Mobil</th>
+                <th class="py-4 px-6 font-semibold">Plat Nomor</th>
+                <th class="py-4 px-6 font-semibold">Kategori</th>
+                <th class="py-4 px-6 font-semibold text-right">Harga Sewa</th>
+                <th class="py-4 px-6 font-semibold text-center">Status</th>
+              </tr>
+            </thead>
+            <tbody id="admin-cars-tbody">
+              <!-- Loading rows (shown by default, hidden by JS) -->
+              <tr class="admin-table-skeleton border-b border-white/5">
+                <td class="py-4 px-6"><div class="skeleton w-16 h-4 rounded"></div></td>
+                <td class="py-4 px-6"><div class="skeleton w-32 h-4 rounded"></div></td>
+                <td class="py-4 px-6"><div class="skeleton w-20 h-4 rounded"></div></td>
+                <td class="py-4 px-6"><div class="skeleton w-16 h-4 rounded"></div></td>
+                <td class="py-4 px-6 text-right"><div class="skeleton w-24 h-4 rounded ml-auto"></div></td>
+                <td class="py-4 px-6 text-center"><div class="skeleton w-20 h-6 rounded-full mx-auto"></div></td>
+              </tr>
+              <tr class="admin-table-skeleton border-b border-white/5">
+                <td class="py-4 px-6"><div class="skeleton w-16 h-4 rounded"></div></td>
+                <td class="py-4 px-6"><div class="skeleton w-32 h-4 rounded"></div></td>
+                <td class="py-4 px-6"><div class="skeleton w-20 h-4 rounded"></div></td>
+                <td class="py-4 px-6"><div class="skeleton w-16 h-4 rounded"></div></td>
+                <td class="py-4 px-6 text-right"><div class="skeleton w-24 h-4 rounded ml-auto"></div></td>
+                <td class="py-4 px-6 text-center"><div class="skeleton w-20 h-6 rounded-full mx-auto"></div></td>
+              </tr>
+              <tr class="admin-table-skeleton border-b border-white/5">
+                <td class="py-4 px-6"><div class="skeleton w-16 h-4 rounded"></div></td>
+                <td class="py-4 px-6"><div class="skeleton w-32 h-4 rounded"></div></td>
+                <td class="py-4 px-6"><div class="skeleton w-20 h-4 rounded"></div></td>
+                <td class="py-4 px-6"><div class="skeleton w-16 h-4 rounded"></div></td>
+                <td class="py-4 px-6 text-right"><div class="skeleton w-24 h-4 rounded ml-auto"></div></td>
+                <td class="py-4 px-6 text-center"><div class="skeleton w-20 h-6 rounded-full mx-auto"></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Empty Table State -->
+        <div id="admin-empty-state" class="hidden flex flex-col items-center justify-center py-10 text-center">
+          <div class="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center mb-3 text-slate-500">
+            <i class="fa-solid fa-folder-open text-xl"></i>
+          </div>
+          <h4 class="text-sm font-semibold text-white mb-0.5">Tidak Ada Data</h4>
+          <p class="text-xs text-gray-500 max-w-xs">Tidak ada data mobil yang cocok atau tersimpan di database.</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==================== MODAL DIALOG: LOGIN ADMIN ==================== -->
+  <div id="login-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+    <!-- Modal Backdrop -->
+    <div id="btn-login-close-backdrop" class="absolute inset-0 bg-slate-950/80 modal-backdrop"></div>
+    
+    <!-- Modal Content Panel -->
+    <div class="relative w-full max-w-md p-8 rounded-3xl glass-panel border border-white/10 shadow-2xl scale-95 opacity-0 transition-all duration-300 transform" id="login-modal-panel">
+      <!-- Close Button -->
+      <button id="btn-login-close" class="absolute right-6 top-6 text-gray-400 hover:text-white transition duration-300 w-8 h-8 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10">
+        <i class="fa-solid fa-xmark text-sm"></i>
+      </button>
+
+      <!-- Logo & Header -->
+      <div class="flex flex-col items-center mb-8">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-indigo-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-indigo-500/20 mb-4">
+          <i class="fa-solid fa-shield-halved text-white text-xl"></i>
+        </div>
+        <h3 class="text-2xl font-bold text-white">Login Administrator</h3>
+        <p class="text-xs text-gray-400 mt-1">Akses panel kontrol AutoRent</p>
+      </div>
+
+      <!-- Error Message Box -->
+      <div id="login-error" class="hidden mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs flex items-start space-x-2.5">
+        <i class="fa-solid fa-circle-exclamation mt-0.5 shrink-0"></i>
+        <span>Username atau password salah. Silakan coba kembali.</span>
+      </div>
+
+      <!-- Form -->
+      <form id="login-form" class="space-y-5">
+        <div>
+          <label for="username" class="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wide">Username</label>
+          <div class="relative">
+            <i class="fa-solid fa-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
+            <input type="text" id="username" required placeholder="Masukkan username admin" class="w-full pl-11 pr-4 py-3 bg-slate-900/50 border border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl text-sm focus:outline-none transition duration-300 text-white placeholder-gray-600">
+          </div>
+        </div>
+
+        <div>
+          <label for="password" class="block text-xs font-semibold text-gray-400 mb-2 uppercase tracking-wide">Password</label>
+          <div class="relative">
+            <i class="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
+            <input type="password" id="password" required placeholder="Masukkan password admin" class="w-full pl-11 pr-4 py-3 bg-slate-900/50 border border-white/10 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 rounded-xl text-sm focus:outline-none transition duration-300 text-white placeholder-gray-600">
+          </div>
+        </div>
+
+        <button type="submit" id="btn-submit-login" class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-xl text-sm transition duration-300 shadow-lg shadow-indigo-600/20 hover:shadow-indigo-500/30 glow-primary flex items-center justify-center space-x-2">
+          <span>Masuk Sekarang</span>
+          <i class="fa-solid fa-arrow-right text-xs"></i>
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- JS Logic Script -->
+  <script src="app.js"></script>
+</body>
+</html>
