@@ -370,11 +370,18 @@ async function loadData() {
       const response = await fetch(`${SCRIPT_URL}?action=getMobil`);
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
-      state.cars = data;
+      
+      // Validasi apakah data yang diterima adalah Array
+      if (Array.isArray(data)) {
+        state.cars = data;
+      } else {
+        console.error("❌ API Response is not an array. Received data:", data);
+        throw new Error("Format data yang diterima dari API bukan Array/List.");
+      }
     } catch (error) {
       console.error("❌ AUTO-RENT: Failed to fetch API data.", error);
       // Fail gracefully and use mock data so page doesn't look broken
-      alert("Gagal terhubung ke backend API. Sistem akan memuat data demonstrasi.");
+      alert(`Gagal terhubung ke database asli:\n${error.message}\n\nAplikasi akan memuat data demonstrasi.`);
       state.cars = [...MOCK_CARS];
     }
   }
