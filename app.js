@@ -1,9 +1,9 @@
 // ==================== CONFIGURATION ====================
-// Paste your Google Apps Script URL here
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyP3Xl_9rT5YEsENUCh_mDWn2Blxo88oWkMb6K3zisnxroOfTnZf74yiwX2O36rOaMb/exec';
+// Paste your Google Apps Script URL here (Pastikan menggunakan tanda kutip/quotes)
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzhfHlJ2uo0xcyp9oBmhaoQfCQxlZVim45ti7SZt5PJ1j6iLmJr4GNkLHPbCN2CPG6q/exec';
 
 // Your business WhatsApp number (format: country code without '+' or spaces, e.g. 628123456789)
-const WA_NUMBER = '628123456789';
+const WA_NUMBER = '62895634998710';
 
 // ==================== STATE MANAGEMENT ====================
 const state = {
@@ -369,15 +369,21 @@ async function loadData() {
     try {
       const response = await fetch(`${SCRIPT_URL}?action=getMobil`);
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-      const data = await response.json();
+      const responseData = await response.json();
       
-      // Validasi apakah data yang diterima adalah Array
-      if (Array.isArray(data)) {
-        state.cars = data;
+      // Mengakomodasi format response dari backend: { status: "success", data: [...] }
+      let carsArray = [];
+      if (Array.isArray(responseData)) {
+        carsArray = responseData;
+      } else if (responseData && responseData.status === "success" && Array.isArray(responseData.data)) {
+        carsArray = responseData.data;
+      } else if (responseData && responseData.status === "error") {
+        throw new Error(responseData.message || "Terjadi kesalahan di backend server.");
       } else {
-        console.error("❌ API Response is not an array. Received data:", data);
-        throw new Error("Format data yang diterima dari API bukan Array/List.");
+        console.error("❌ API Response format invalid:", responseData);
+        throw new Error("Format data API tidak dikenali (harus array atau objek dengan field data).");
       }
+      state.cars = carsArray;
     } catch (error) {
       console.error("❌ AUTO-RENT: Failed to fetch API data.", error);
       // Fail gracefully and use mock data so page doesn't look broken
@@ -436,6 +442,7 @@ async function handleLoginSubmit(event) {
   DOM.loginError.classList.add('hidden');
 
   let success = false;
+  let customErrorMsg = "";
 
   if (isMockMode()) {
     // Demo mode: standard admin/admin validation
@@ -447,15 +454,18 @@ async function handleLoginSubmit(event) {
     try {
       const loginUrl = `${SCRIPT_URL}?action=login&username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`;
       const response = await fetch(loginUrl);
-      if (!response.ok) throw new Error("HTTP error during login");
+      if (!response.ok) throw new Error("Gagal menghubungi server autentikasi.");
       const result = await response.json();
       
-      // Expected backend schema: { success: true } or similar
-      if (result && result.success) {
+      // Mengakomodasi format response dari backend: { status: "success", message: "..." }
+      if (result && (result.success || result.status === "success")) {
         success = true;
+      } else if (result && result.message) {
+        customErrorMsg = result.message;
       }
     } catch (error) {
       console.error("❌ AUTO-RENT: Login request error.", error);
+      customErrorMsg = "Gagal terhubung ke API Login: " + error.message;
     }
   }
 
@@ -468,6 +478,12 @@ async function handleLoginSubmit(event) {
     hideLoginModal();
     switchToAdminView();
   } else {
+    const errorSpan = DOM.loginError.querySelector('span');
+    if (errorSpan && customErrorMsg) {
+      errorSpan.textContent = customErrorMsg;
+    } else if (errorSpan) {
+      errorSpan.textContent = "Username atau password salah. Silakan coba kembali.";
+    }
     DOM.loginError.classList.remove('hidden');
     DOM.passwordInput.value = '';
     DOM.passwordInput.focus();
